@@ -1,6 +1,25 @@
 apply plugin: 'com.android.application'
 
+def releaseTime() {
+    return new Date().format("yyyyMMdd", TimeZone.getTimeZone("UTC"))
+}
+
 android {
+    signingConfigs {
+        debug {
+            keyAlias 'kdumpda'
+            keyPassword 'kingdom'
+            storeFile file('../keyRelease/release.keystore')
+            storePassword 'kingdom'
+        }
+
+        release {
+            keyAlias 'kdumpda'
+            keyPassword 'kingdom'
+            storeFile file('../keyRelease/release.keystore')
+            storePassword 'kingdom'
+        }
+    }
     compileSdkVersion 25
     buildToolsVersion "28.0.3"
     defaultConfig {
