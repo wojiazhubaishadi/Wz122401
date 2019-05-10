@@ -37,7 +37,93 @@ android {
         }
     }
 }
+android {
+    signingConfigs {
+        debug {
+            keyAlias 'kdumpda'
+            keyPassword 'kingdom'
+            storeFile file('../keyRelease/release.keystore')
+            storePassword 'kingdom'
+        }
 
+        release {
+            keyAlias 'kdumpda'
+            keyPassword 'kingdom'
+            storeFile file('../keyRelease/release.keystore')
+            storePassword 'kingdom'
+        }
+    }
+    compileSdkVersion 25
+    buildToolsVersion "28.0.3"
+    defaultConfig {
+        applicationId "android.kingdom.com.wz122401"
+        minSdkVersion 15
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    // 用来关闭 as 的 PNG 合法性检查的，直接不让它检查
+    aaptOptions {
+        cruncherEnabled = false
+        useNewCruncher = true
+    }
+    buildTypes {
+        release {
+            buildConfigField "boolean", "LOG_DEBUG", "false"
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+            //apk命名
+            android.applicationVariants.all { variant ->
+                variant.outputs.each { output ->
+                    def outputFile = output.outputFile
+                    if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                        //这里修改apk文件名
+                        def fileName = "AndroidPCT-${defaultConfig.versionCode}-${defaultConfig.versionName}-${releaseTime()}.apk"
+                        output.outputFile = new File(outputFile.parent, fileName)
+                    }
+                }
+//                variant.outputs.all { output ->
+//                    if (!variant.buildType.isDebuggable()) {
+//                        //获取签名的名字 variant.signingConfig.name
+//                        //要被替换的源字符串
+//                        def sourceFile = "-${variant.flavorName}-${variant.buildType.name}"
+//                        //替换的字符串
+//                        def replaceFile = "AndroidYX-${defaultConfig.versionCode}-${defaultConfig.versionName}-${releaseTime()}.apk"
+//                        outputFileName = output.outputFile.name.replace(sourceFile, replaceFile);
+//                        //遗留问题：如何获取当前module的name，如CodeBooke这个名字怎么获取到
+//                    }
+//                }
+            }
+        }
+        debug {
+            buildConfigField "boolean", "LOG_DEBUG", "true"
+        }
+    }
+    //设置虚拟机堆内存空间大小，避免在编译期间OOM
+    dexOptions {
+        incremental true
+        javaMaxHeapSize "4g"
+    }
+    //打包不检查
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+    productFlavors {
+    }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+    repositories {
+        flatDir {
+            dirs 'libs'   // aar目录
+        }
+    }
+}
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
