@@ -5,10 +5,22 @@ buildscript {
     repositories {
         maven { url 'https://maven.google.com' }
         jcenter()
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+        maven {
+            url 'https://maven.google.com/'
+            name 'Google'
+        }
+        google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
-        
+        classpath 'com.android.tools.build:gradle:3.1.4'
+//        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+        classpath 'com.jakewharton:butterknife-gradle-plugin:9.0.0-rc2'
+
+        classpath 'com.jakewharton.hugo:hugo-plugin:1.2.1'
+
+        // 添加WMRouter插件
+        classpath "com.sankuai.waimai.router:plugin:1.1.0"
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -19,9 +31,59 @@ allprojects {
     repositories {
         jcenter()
         maven { url 'https://maven.google.com' }
+        mavenCentral()
+        maven { url "http://jcenter.bintray.com"}
+//        maven { url 'https://raw.githubusercontent.com/geely-csp-project/geelyLibRepo/master' }
+        maven {
+            // All of React Native (JS, Android binaries) is installed from npm
+            url "$projectDir/../../node_modules/react-native/android"//Fixme 此处是坑人
+        }
+        maven { url 'https://jitpack.io' }
+        maven {
+            url "http://dl.bintray.com/ecarx/maven"
+        }
+        maven {
+            url 'http://maven.aliyun.com/nexus/content/groups/public'
+        }
+//        maven {
+//            url 'http://maven.aliyun.com/nexus/content/repositories/releases/'
+//        }
+        maven {
+            url 'https://maven.google.com/'
+            name 'Google'
+        }
+        maven {
+            url "http://n.xchanger.cn/nexus/content/repositories/releases/"
+        }
+    }
+
+    configurations.all {
+        resolutionStrategy.force 'com.android.support:support-v4:24.0.0'
     }
 }
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+ext {
+/**
+ * SDK versions
+ */
+    buildToolsVersion = '28.0.3'
+    compileSdkVersion = 28
+    targetSdkVersion = 25
+
+    minSdkVersion = 17
+    devMinSdkVersion = 17
+
+    supportLibVersion = '28.0.0'
+
+    supportLibAppV13 = "com.android.support:support-v13:$supportLibVersion"
+    supportLibAppV4 = "com.android.support:support-v4:$supportLibVersion"
+    supportLibAppCompat = "com.android.support:appcompat-v7:$supportLibVersion"
+    supportLibDesign = "com.android.support:design:$supportLibVersion"
+    supportLibCardView = "com.android.support:cardview-v7:$supportLibVersion"
+
+    verson_3rd_iblue = "0.1.028a"
 }
